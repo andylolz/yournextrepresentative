@@ -46,8 +46,10 @@ def constituency_in_year(person, election):
 
 @register.filter
 def election_decision_known(person, election):
+    return False
     return person.get_elected(election) is not None
 
 @register.filter
 def was_elected(person, election):
+    return False
     return bool(person.get_elected(election))
