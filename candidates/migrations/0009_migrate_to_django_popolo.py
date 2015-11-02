@@ -15,10 +15,6 @@ class YNRPopItImporter(PopItImporter):
         self.apps = apps
         self.schema_editor = schema_editor
 
-    def get_popolo_model_class(self, model_name):
-        """Return the Popolo model class"""
-        return self.apps.get_model("popolo", model_name)
-
     def update_person(self, person_data):
         new_person_data = person_data.copy()
         # There are quite a lot of summary fields in PopIt that are
