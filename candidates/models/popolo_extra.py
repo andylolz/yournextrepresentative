@@ -30,6 +30,7 @@ class OrganizationExtra(models.Model):
 class PostExtra(models.Model):
     base = models.OneToOneField(Post, related_name='extra')
 
+    candidates_locked = models.BooleanField(default=False)
     models.ManyToManyField(Election, related_name='posts')
 
 
