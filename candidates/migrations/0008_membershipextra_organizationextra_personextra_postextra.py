@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('elections', '0004_auto_20151014_1648'),
         ('popolo', '0001_initial'),
-        ('candidates', '0008_migrate_to_django_popolo'),
+        ('candidates', '0007_add_result_recorders_group'),
     ]
 
     operations = [
