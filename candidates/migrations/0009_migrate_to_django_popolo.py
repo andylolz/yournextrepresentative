@@ -9,6 +9,8 @@ from popolo.importers.popit import PopItImporter
 
 class YNRPopItImporter(PopItImporter):
 
+    person_id_to_json_data = {}
+
     def __init__(self, apps, schema_editor):
         self.apps = apps
         self.schema_editor = schema_editor
@@ -29,7 +31,10 @@ class YNRPopItImporter(PopItImporter):
         if email:
             email = re.sub(r'\s*', '', email)
         new_person_data['email'] = email
-        return super(YNRPopItImporter, self).update_person(new_person_data)
+        person_id, person = super(YNRPopItImporter, self).update_person(new_person_data)
+
+        self.person_id_to_json_data[person_id] = new_person_data
+        return person_id, person
 
     def make_contact_detail_dict(self, contact_detail_data):
         new_contact_detail_data = contact_detail_data.copy()
