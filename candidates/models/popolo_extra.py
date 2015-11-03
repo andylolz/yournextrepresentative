@@ -25,6 +25,18 @@ class PersonExtra(models.Model):
 
         return party.organization
 
+    def get_elected(self, election):
+        e = Election.objects.get_by_slug(election)
+        # FIXME: need to set post here as well I think
+        count = self.base.memberships.filter(
+            role=e.winner_membership_role,
+            extra__election__slug=election
+            ).count()
+
+        if count == 1:
+            return True
+        return False
+
 
 class OrganizationExtra(models.Model):
     base = models.OneToOneField(Organization, related_name='extra')
