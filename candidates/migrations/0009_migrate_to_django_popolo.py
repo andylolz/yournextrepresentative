@@ -29,6 +29,10 @@ class YNRPopItImporter(PopItImporter):
         new_person_data['email'] = email
         person_id, person = super(YNRPopItImporter, self).update_person(new_person_data)
 
+        PersonExtra = self.get_model_class('candidates', 'PersonExtra')
+        pe = PersonExtra.objects.get_or_create(
+            base=person
+        )
         self.person_id_to_json_data[person_id] = new_person_data
         return person_id, person
 
