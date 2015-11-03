@@ -34,6 +34,28 @@ class YNRPopItImporter(PopItImporter):
             base=person
         )
         self.person_id_to_json_data[person_id] = new_person_data
+
+        # create an election winner role
+        standing_in = new_person_data['standing_in']
+        Election = self.get_model_class('elections', 'Election')
+        Membership = self.get_model_class('popolo', 'Membership')
+        MembershipExtra = self.get_model_class('candidates', 'MembershipExtra')
+        if standing_in is not None:
+            for election, candidacy in standing_in.items():
+                election_data = Election.objects.get_by_slug(election)
+                if candidacy is not None and candidacy.get('elected', False) is True:
+                    # TODO: has to be a better solution
+                    id = "winner:{0}:{1}".format(candidacy['post_id'], election)
+                    m, created = Membership.objects.get_or_create(
+                        id=id,
+                        post_id=candidacy['post_id'],
+                        person_id=person_id,
+                        role=election_data.winner_membership_role
+                    )
+                    me, created = MembershipExtra.objects.get_or_create(base=m)
+                    me.election = election_data
+                    me.save()
+
         return person_id, person
 
     def update_post(self, post_data, area, org_id_to_django_object):
