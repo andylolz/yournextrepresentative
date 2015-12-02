@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from candidates.models import PopItPerson
-from candidates.popit import create_popit_api_object
+from popolo.models import Person
 
 class Command(BaseCommand):
     args = "<PERSON-ID> <SCHEME> <IDENTIFIER>"
@@ -9,13 +8,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.verbosity = int(options.get('verbosity', 1))
-        api = create_popit_api_object()
         if len(args) != 3:
             raise CommandError("You must provide all three arguments")
 
         person_id, scheme, identifier = args
 
-        person = PopItPerson.create_from_popit(api, person_id)
+        person = Person.objects.get(id=person_id)
 
         person.identifiers.append(
             {
@@ -24,12 +22,11 @@ class Command(BaseCommand):
             }
         )
 
-        person.save_to_popit(api)
-        person.invalidate_cache_entries()
+        person.save()
 
         # FIXME: this should create a new version in the versions
         # array too, otherwise you manually have to edit on the
         # YourNextRepresentative site too to create a new version with
         # a change message.
 
-        print "Successfully updated {0}".format(person_id)
+        self.stdout.write("Successfully updated {0}\n".format(person_id))
